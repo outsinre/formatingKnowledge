@@ -1,0 +1,77 @@
+\chapter{\LaTeX{} Resources}
+\label{cha:latex-resources}
+
+\section{Find References}
+\label{sec:find-references}
+
+In part \ref{cha:inputChinese} on page
+\pageref{cha:inputChinese}, we have a simple clarification on
+how to insert Chinese characters in English articles. We will
+focus on \LaTeX{} itself in this part.
+
+Please find more appropriate at
+\href{https://ctan.org/topic/tut-latex?lang=en}{\LaTeX{}
+  ctan}. Also, please find anwsers at
+\cite{stackexchange}. You'd better go through the tutorial series
+\cite{tutorial}. My personal webiste \cite{zhstar} might give some
+ideas.
+
+\section{AUCTeX}
+\label{sec:auctex}
+
+\subsection{Inserting}
+\label{sec:inserting}
+
+\begin{table}[tbp]
+  \centering
+  \begin{tabular}{|l|l|}
+    \hline{}
+    Binding & Function \\ \hline \hline{}
+    \verb|C-c C-e| & insert environment \\ \hline{}
+    \verb|C-c C-s| & insert section \\ \hline{}
+    \verb|C-c C-m| & macro (command) \\ \hline{}
+    \verb|M-return| & another item \\ \hline{}
+    \verb|C-c C-c| & compile \LaTeX{} \\ \hline{}
+    \verb|C-c C-v| & preview output \\ \hline{}
+    \verb|C-c =| & show document layout by RefTeX \\ \hline{}
+    \verb|C-c C-o C-b| & fold the buffer \\ \hline{}
+    \verb|C-c C-o b| & unfold the buffer \\ \hline{}
+    \verb|C-c C-r| & compile selected region \\ \hline{}
+    \verb|C-c C-b| & compile current buffer \\ \hline
+  \end{tabular}
+  \caption{AUCTeX Bindings}
+  \label{tab:auctex-bindings}
+\end{table}
+
+Have a look at
+\href{https://github.com/bigclean/blogs/blob/master/emacs/auctex.mkd}{\LaTeX{}}
+
+\subsection{\LaTeX{} Sources Formating}
+\label{sec:code-formating}
+
+Use \verb|C-c C-q C-s| to format \LaTeX{} \textit{section}
+code. \verb|C-c C-q C-p| is to format \textit{paragraph} text.
+
+\subsection{Font Specifiers}
+\label{sec:font-specifiers}
+
+Use \verb|C-c C-f C-i| to insert \textit{italic} text. Smililary,
+Use \verb|C-c C-f C-b| to insert \textit{bold} text. Read more at \href{https://www.gnu.org/software/auctex/manual/auctex/Font-Specifiers.html}{Insert Font Spcecifiers}.
+
+\begin{center}
+  \begin{tabular}{|l|l|}
+    \hline{}
+    C-c C-f C-i	& italic \\ \hline{}
+    C-c C-f C-b & bold \\ \hline{}
+    C-c C-f C-e & emphasize \\ \hline{}
+    C-c C-f C-s & slight italic \\ \hline{}
+    C-c C-f C-r & roman \\ \hline{}
+    C-c C-f C-f & sans \\ \hline{}
+    C-c C-f C-d & delete font formating \\ \hline
+  \end{tabular}
+\end{center}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

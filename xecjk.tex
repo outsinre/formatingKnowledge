@@ -1,0 +1,25 @@
+\usepackage[boldfont]{xeCJK}
+
+\setCJKmainfont{Adobe Song Std}[ % search by 'family'
+BoldFont = NotoSansHans-Bold % search by 'postscriptname'
+                             % because 'NotoSansHans' family has
+                             % multiple variants.
+]
+\setCJKsansfont{NotoSansHans-DemiLight}[
+  BoldFont = NotoSansHans-Bold
+]
+\setCJKmonofont{Adobe Fangsong Std}
+
+% set new font family
+\setCJKfamilyfont{zhyahei}{msyh}[ % search font by filename
+  Path = fonts/,
+  Extension = .ttf,
+  BoldFont = {*bd}
+]
+% create font family command alias
+\NewDocumentCommand{\yahei}{}{\CJKfamily{zhyahei}}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

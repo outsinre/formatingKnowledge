@@ -1,0 +1,34 @@
+\usepackage{fontspec}
+
+\setmainfont{Tinos}[ % search font by filename
+  Path = /opt/fonts/core/Tinos/,
+  Extension = .ttf,
+  UprightFont = *-Regular,
+  BoldFont = *-Bold,
+  ItalicFont = *-Italic,
+  BoldItalicFont = *-BoldItalic
+]
+\setsansfont{NotoSans}[ % search by 'postscriptname'
+  BoldFont = NotoSans-Bold,
+  ItalicFont = NotoSans-Italic,
+  BoldItalicFont = NotoSans-BoldItalic  
+]
+\setmonofont{migu-1m-regular}[
+  BoldFont = migu-1m-bold
+]
+
+% Chinese fonts by 'fontspec':
+
+% \setmainfont{Adobe Song Std}
+% \setsansfont{Noto Sans S Chinese}
+% \setmonofont{Adobe Fangsong Std}
+
+% \XeTeXlinebreaklocale "zh"
+% \XeTeXlinebreakskip = 0pt plus 1pt minus 0.1pt
+
+% \usepackage[top=1in,bottom=1in,left=1.2in,right=1in]{geometry}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

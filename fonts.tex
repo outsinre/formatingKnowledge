@@ -1,0 +1,66 @@
+\usepackage{fontspec}
+
+% Western fonts by 'fontspec':
+\setmainfont{Tinos}[ % search font by filename
+  Path = /opt/fonts/core/Tinos/,
+  Extension = .ttf,
+  UprightFont = *-Regular,
+  BoldFont = *-Bold,
+  ItalicFont = *-Italic,
+  BoldItalicFont = *-BoldItalic
+]
+\setsansfont{NotoSans}[ % search by 'postscriptname'
+  BoldFont = NotoSans-Bold,
+  ItalicFont = NotoSans-Italic,
+  BoldItalicFont = NotoSans-BoldItalic  
+]
+\setmonofont{migu-1m-regular}[
+  BoldFont = migu-1m-bold
+]
+
+% Chinese fonts by 'fontspec':
+%
+% \setmainfont{Adobe Song Std}
+% \setsansfont{Noto Sans S Chinese}
+% \setmonofont{Adobe Fangsong Std}
+% \XeTeXlinebreaklocale "zh"
+% \XeTeXlinebreakskip = 0pt plus 1pt minus 0.1pt
+% \usepackage[top=1in,bottom=1in,left=1.2in,right=1in]{geometry}
+
+
+% Chinese fonts by 'xeCJK':
+\usepackage[boldfont]{xeCJK}
+\setCJKmainfont{Adobe Song Std}[ % search by 'family'
+BoldFont = NotoSansHans-Bold % search by 'postscriptname'
+                             % because 'NotoSansHans' family has
+                             % multiple variants.
+]
+\setCJKsansfont{NotoSansHans-DemiLight}[
+  BoldFont = NotoSansHans-Bold
+]
+\setCJKmonofont{Adobe Fangsong Std}
+
+% set new font family
+\setCJKfamilyfont{zhyahei}{msyh}[ % search font by filename
+  Path = fonts/,
+  Extension = .ttf,
+  BoldFont = {*bd}
+]
+% create font family command alias
+\NewDocumentCommand{\yahei}{}{\CJKfamily{zhyahei}}
+
+
+% Chinese fonts by 'xeCJK' from 'CTeX':
+%
+% \usepackage[UTF8,heading=true]{ctex}
+
+% \setcjkmainfont{Adobe Song Std} % search by `family'
+% \setCJKsansfont{NotoSansHans-DemiLight}[
+%   BoldFont = NotoSansHans-Bold
+% ]
+% \setCJKmonofont{Adobe Fangsong Std}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

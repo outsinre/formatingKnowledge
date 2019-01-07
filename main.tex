@@ -1,0 +1,74 @@
+\documentclass[a4paper,11pt]{book}
+
+% Import package settings.
+\input{packages}
+\input{fonts}
+\input{listings}
+
+% Tell `include' to only include these sources in the body.
+\includeonly{preface,resources,chinese,tutorial,combinatorics,tree,stack,c,cpp,sequenceOfNumber,brainteaser,aat,chemistry,appendices,postscript}
+
+
+\begin{document}
+
+\frontmatter{}
+
+\title{Miscellanies}
+\author{西二闲画生\\
+  Department of Life,\\
+  Zhonghua Uni.,\\
+  WH, China\\
+  \emph{zhu@riseup.net}}
+\date{\today}
+\maketitle
+
+\include{preface}
+
+\setcounter{tocdepth}{3} % Show subsubsections
+\tableofcontents{}
+
+\mainmatter{}
+
+\part{\LaTeX{}}
+\include{resources}
+\include{chinese}
+\include{tutorial}
+
+\part{Mathematics}
+\include{combinatorics}
+\include{sequenceOfNumber}
+
+\part{Algorithm}
+\include{tree}
+\include{stack}
+
+\part{Programming}
+\include{c}
+\include{cpp}
+
+\part{Brainteaser}
+\include{brainteaser}
+\include{aat}
+
+\part{Chemistry}
+\label{part:chemistry}
+\include{chemistry}
+
+
+% References before Appendix.
+\printbibliography[heading=bibintoc,title={Reference}]{}
+
+% Prefer `appendices' environment over `appendix' command.
+\include{appendices}
+\include{appendix}
+
+\backmatter{}
+\include{postscript}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% TeX-engine: xetex
+%%% End:

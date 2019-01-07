@@ -1,0 +1,242 @@
+\part{数列}
+
+\section{等差数列}
+
+我们知道等差数列的前 n 项和是首项加尾项乘以项数除以 2.
+
+\[
+  \begin{aligned}
+    a_1 &= a_1 \\
+    &= a_0 + d \\
+    a_2 &= a_1 + d = a_1 + d \\
+    a_3 &= a_2 + d = a_1 + 2 \cdot d \\
+    & \cdots \\
+    a_n &= a_{n-1} + d \\
+    &= a_1 + (n - 1) \cdot d \\
+    &= a_0 + n \cdot d
+  \end{aligned}
+\]
+
+这里特别提到 $a_0$. 严格来说，数列下标从 1 开始（表示第一个项），0
+不属于数列下标，但有时为了计算方便，要借用 $a_0 = a_1 - d$.
+
+等差数列，任意连续三项中，前后两项之和是中间项的 2 倍，因中间项减
+等差 d 是前一项，加等差 d 是后一项。
+
+等差数列的前 n 项和：
+
+\[
+  S_n = \frac{(a_1 + a_n) \cdot n}{2}
+\]
+
+\section{等差数列幂和}
+
+等差数列的幂和是指等差数列前 n 项的 $t\, (t = 1,2,\cdots)$ 次幂之
+和：
+
+\[
+  S_t(n) = \sum_{k = 1}^n a_k^t = a_1^t + a_2^t + \cdots + a_n^t
+\]
+
+基本思路是\uline{升维：借用~$ t + 1$~次二项展开式，得到数列相临两项
+  的~$t + 1$~次幂差}。一般来说，我们关注的是平方、立方，即 $t =
+1,\, 2$. 后面不加说明，假设 t 为 2, 则 $t + 1 = 3$:
+
+\[
+  \begin{aligned}
+    (a + b)^3 &= a^3 + 3a^2b + 3ab^2 + b^3 \\
+    a_{n+1}^3 - a_n^3 &= (a_n + d)^3 - a_n^3 \\
+    &= 3d \cdot a_n^2 + 3d^2 \cdot a_n + d^3
+  \end{aligned}
+\]
+
+对 n 遍历：
+
+\[
+  \begin{aligned}
+    a_2^3 - a_1^3 &= 3d \cdot a_1^2 + 3d^2 \cdot a_1 + d^3 \\
+    a_3^3 - a_2^3 &= 3d \cdot a_2^2 + 3d^2 \cdot a_2 + d^3 \\
+    & \cdots \\
+    a_{n+1}^3 - a_n^3 &= 3d \cdot a_n^2 + 3d^2 \cdot a_n + d^3
+  \end{aligned}
+\]
+
+对 n 个式子求和，得出公式：
+
+\[
+  a_{n+1}^3 - a_1^3 = 3d \cdot \sum_{k = 1}^n a_k^2 + 3d^2 \cdot
+  \sum_{k = 1}^n a_k + n \cdot d^3
+\]
+
+此式很明显可以直接算出平方和。但此式受限于$a_0, d$ 没法直接化简，所
+以我们关键是住思路。其实等差数列前 n 项和可以看成 $t = 1$, 其前 n
+项和除了首尾相法加外，还可以借助 $t + 1 = 2$ 次展开式。
+
+下面以前 n 个自然数的平方和为例介绍求解思路（$a_1 = 1,\, d = 1$）。
+首先，我们有：
+
+\[
+  \begin{aligned}
+    a_{n+1}^3 - a_n^3 &= (n + 1)^3 - n^3 \\
+    &= 3n^2 + 3n + 1
+  \end{aligned}
+\]
+
+对 n 遍历：
+
+\[
+  \begin{aligned}
+    2^3 - 1^3 &= 3 \times 1^2 + 3 \times 1 + 1 \\
+    3^3 - 2^3 &= 3 \times 2^2 + 3 \times 2 + 1 \\
+    & \cdots \\
+    n^3 - (n - 1)^3 &= 3(n - 1)^2 + 3(n - 1) + 1 \\
+    (n + 1)^3 - n^3 &= 3n^2 + 3n + 1
+  \end{aligned}
+\]
+
+把这 n 个式子加起来：
+
+\[
+  \begin{aligned}
+    (n + 1)^3 - 1 &= 3 \cdot \sum_{k = 1}^nk^2 + 3 \cdot \sum_{k =
+      1}^nk + n \\
+    3 \cdot \sum_{k = 1}^nk^2 &= (n + 1)^3 - 3 \cdot \frac{(1 + n)
+      \cdot n}{2} - (n + 1) \\
+    \sum_{k = 1}^nk^2 &= \frac{n(n + 1)(2n + 1)}{6}
+  \end{aligned}
+\]
+
+通过公式，我们发现平方和（$t = 2$）与线性和（$t = 1$）的关系：
+
+\[
+  \frac{\sum_{k = 1}^n k}{\sum_{k = 1}^n k^2} = \frac{2n + 1}{3}
+\]
+
+对于其它等差数列，我们用同样方法。如计算 $1^2, 4^2, 7^2, \cdots,
+(3n - 2)^2$.
+
+\section{等差数列的积和}
+
+上面讲的是等差数列每项的 t 次幂和，如果求和时，每项不是 t 次幂，而改成相临
+t 项积呢？为简便起见，这里假设 $t = 2$, 更高次幂依此类推即可。
+
+\[
+  S(n) = \sum_{k = 1}^n a_k \cdot a_{k+1} = a_1 \cdot a_2 + a_2 \cdot a_3 + \cdots + a_n \cdot
+  a_{n+1}
+\]
+
+类似上面方法，思路是对乘积变换，前后间可能消除子项。具体是这样
+的，\uline{升维：把二项积变换三项积}：
+
+\[
+  a_n \cdot a_{n + 1} = x \cdot a_{n - 1} a_n a_{n + 1} + y \cdot
+  a_n a_{n + 1} a_{n + 2}
+\]
+
+其中 x 和 y 是特定系数，实际上 $-x = y = \frac{1}{3d}$:
+
+\[
+  \begin{aligned}
+    x \cdot a_{n - 1} a_n a_{n + 1} + y \cdot a_n a_{n + 1}
+    a_{n + 2}
+    &= x \cdot (a_n - d) a_n a_{n + 1} + y \cdot a_n a_{n + 1}
+    (a_n + 2d) \\
+    &= x a_n \cdot a_n a_{n + 1} - xd \cdot a_n a_{n + 1}
+    + y a_n \cdot a_n a_{n + 1} + 2yd \cdot a_n a_{n + 1} \\
+    &= [(x + y)a_n + (2y - x)d] \cdot a_n a_{n + 1}
+  \end{aligned}
+\]
+
+x 和 y 的值应独立于 $a_0, d$ 成立，则：
+
+\[
+  \begin{aligned}
+    (x + y)a_n + 2yd - xd = 1 \\
+    x + y = 0 \\
+    2y - x = 1
+  \end{aligned}
+\]
+
+可以算出 $-x = y = \frac{1}{3d}$:
+
+\[
+  a_n a_{n + 1} = \frac{1}{3d}( -a_{n - 1} a_n a_{n + 1} +
+  a_n a_{n + 1} a_{n + 2} )
+\]
+
+对 n 遍历得：
+
+\[
+  \begin{aligned}
+    a_1a_2 &= \frac{1}{3d}(-a_0a_1a_2 + a_1a_2a_3) \\
+    a_2a_3 &= \frac{1}{3d}(-a_1a_2a_3 + a_2a_3a_4) \\
+    & \cdots \\
+    a_n \cdot a_{n + 1} &= \frac{1}{3d}( -a_{n - 1} a_n a_{n + 1} +
+  a_n a_{n + 1} a_{n + 2} )
+  \end{aligned}
+\]
+
+得出前等差数列的前 n 项积和：
+
+\[
+  S(n) = \sum_{k = 1}^n a_k \cdot a_{k+1} = \frac{1}{3d}(a_na_{n+1}a_{n+2} - a_0a_1a_2)
+\]
+
+不难发现，此式关键是首尾两个三项积之差。注意这里借用了 $a_0$. 下面以
+
+\[
+  S(n) = 1 \times 4 + 4 \times 7 + 7 \times 10 + \cdots + (3n -
+  2)(3n - 2 + 3)
+\]
+
+为例。可推出：
+
+\[
+  \begin{aligned}
+    (3n - 2)(3n - 2 + 3)
+    &= \frac{1}{9}[-(3n - 2 - 3)(3n - 2)(3n -
+    2 + 3) + (3n - 2)(3n - 2 + 3)(3n - 2 + 6)] \\
+    &= \frac{1}{9}[-(3n - 5)(3n - 2)(3n + 1) + (3n - 2)(3n + 1)(3n + 4)]
+  \end{aligned}
+\]
+
+每项被变换成加减法，可以通部分抵消，达到求和目的：
+
+\[
+  \begin{aligned}
+    1 \times 4 &= \frac{1}{9}[-(-2) \times 1 \times 4 + 1 \times 4
+    \times 7] \\
+    4 \times 7 &= \frac{1}{9}[-1 \times 4 \times 7 + 4 \times 7
+    \times 10] \\
+    7 \times 10 &= \frac{1}{9}[-4 \times 7 \times 10 + 7 \times 10
+    \times 13] \\
+    & \cdots \\
+    (3n - 2)(3n + 1) & = \frac{1}{9}[-(3n - 5)(3n - 2)(3n + 1) + (3n - 2)(3n + 1)(3n + 4)]
+  \end{aligned}
+\]
+
+这里 $a_0 = 1 - 3 = -2$. 所有等式相加，得：
+
+\[
+  S(n) = \frac{1}{9}[(3n - 2)(3n + 1)(3n + 4) + 8]
+\]
+
+\section{幂和与积和的联系}
+
+至此等差数列的幂和与积和都可得出。我们发现求幂和与积和的通用思路是
+\textbf{升维}。幂和借用 $t + 1$ 次二展开式，而积和借用 $t + 1$ 项积。
+
+其实幂和可以用积和的方式计算：
+
+\[
+  \begin{aligned}
+    a_n^2 &= a_n \cdot [(a_n + d) - d] \\
+    &= a_n \cdot [a_{n+1} - d] \\
+    &= a_n a_{n+1} - d \cdot a_n \\
+  \end{aligned}
+\]
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

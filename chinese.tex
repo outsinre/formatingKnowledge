@@ -1,0 +1,136 @@
+\chapter{汉语}
+\label{cha:inputChinese}
+
+对字体的引用要注意，如果一个字体族 family 有多个变种 \footnote{如
+  regular, bold, italic 等。}，请引用字体的 postscriptname.
+
+默认情况下，\LaTeX{} 会把文档里用到的字体子集内嵌到生成的 PDF 里，
+可以通过命令行 \textit{pdffonts filename.pdf} 查询，结果
+如 \ref{cha:long-code-line} 所示。
+
+此例说明，对应文档内嵌了七个字体子集。\LaTeX{} 文档通常只会用到字
+体文件的部分 code point，所以只需要内嵌使用到的部分即可。每个字体
+的前面都有一串无规则字母，代表对应字体文件被内嵌的子集。还有一列叫
+sub 也说明是否是子集。
+
+\section{CJK 包}
+
+在英文文档里插入少量中文
+
+\subsection{CJK 和 CJK* 环境}
+在英文文档里用 CJK 包的 CJK 或 CJK* 环境插入少量汉字。后者会忽略汉
+字后面的空格，推荐使用。
+
+\subsection{字体}
+bsmi~字体可能没有，尝试换一个如~gkai, ~gbsn~等。
+
+\section{xeCJK 更好}
+xeCJK 在处理细节上更好，关键是可方便设置中英文字体。用 xeCJK 则不需
+要特殊环境包裹汉字，只需在``导言区''设置好中英文字体即可。
+
+xeCJK 的 indentfirst 选项：
+\begin{center}
+  \verb|\usepackage[indentfirst]{xeCJK}|
+\end{center}
+已过时，推荐直接用 indentfirst 宏包：
+\begin{center}
+  \verb|\usepackage{indentfirst}|
+\end{center}
+
+\section{fontspec 和 ctex}
+\label{sec:fontspec-ctex}
+
+还有 \textit{fontspec} 和 \textit{ctex} 包可以实现中文输入，更多详
+情请看 \href{https://www.zhstar.win/2015/02/05/LaTeX/}{\LaTeX{}
+  post}.
+
+\begin{itemize}
+\item \verb|fontspec| sets western or Chinese fonts (i.e. main, sans, serif, bold, italic, and bolditalic).
+\item \verb|CJK| sets Chinese, Japanese, and Korean fonts, punctuation etc. for TeX engine.
+\item \verb|xeCJK| similar tof \verb|CJK| but for XeTeX engine.
+\item \verb|CTeX| sets \verb|CJK/xeCJK| document layout.
+\end{itemize}
+
+\section{中英文空格}
+我们想要的效果是英文字符前后自动加上空格。xeCJK 则会自动处理，但是
+效果不是非常好。
+
+CJK 会忽略 \TeX{} 源码里的空格。用 CJK 宏集里的 CJKspace 包，源码里
+英文后空格会保留，中文后空格依然被 CJK* 压缩。还有一个方法是在需要空
+格的地方用 tilde $\sim$.
+
+\section{行首缩进}
+
+中文习惯每段行首缩进两个汉字。英文有两种缩进格式。默认是每小节的第
+一段缩进，后面的段不缩进，段间没有空行。另一种是不缩进，每段间留有
+空行。
+
+本文档只插入少量中文作例子，固保留英文默认缩进方式。如要换成中文缩
+进，则用 indentfirst 包，使每节第一段也缩进，如下：
+\begin{center}
+  \begin{tabular}{l}
+    \verb|\usepackage{indentfirst}| \\
+    \verb|\setlength{\parindent}{2em}|
+  \end{tabular}
+\end{center}
+如若换成英文第二种缩进，则
+用\href{https://tex.stackexchange.com/a/40432}{parskip} 包，skip 表
+示相临两段之间的间隙大小：
+\begin{center}
+  \begin{tabular}{l}
+    \verb|\usepackage[parfill]{parskip}|
+  \end{tabular}
+\end{center}
+也可用相对应的命令实现：
+\begin{center}
+  \begin{tabular}{l}
+    \verb|\setlength{\parindent}{0pt}| \\
+    \verb|\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}|
+  \end{tabular}
+\end{center}
+
+\section{局部字体命令}
+
+前面提到的方法都是全局生效，有没有类似 \verb|\emph{}| 和
+\verb|\textit{}| 这种监时改中文字体的方法呢？
+
+在 \textit{xecjk.tex} 中有如下代码：
+
+\begin{lstlisting}[language=TeX,caption={New font family},label={lst:new-font-family}]
+% set new font family
+\setCJKfamilyfont{zhyahei}{msyh}[
+  Path = fonts/,
+  Extension = .ttf,
+  BoldFont = {*bd}
+]
+
+% create font family command alias
+\NewDocumentCommand{\yahei}{}{\CJKfamily{zhyahei}}
+\end{lstlisting}
+
+根据需求定义一个新的字体族 family 名 \textit{zhyahei}，新字体族的
+引用方法是：
+
+\begin{lstlisting}[language=TeX,caption={Inline Chinese fonts},label={lst:inline-chn-fonts}]
+{\CJKfamily{zhyahei}{这里输中文}}
+% -or-
+{\CJKfamily{zhyahei}这里输中文}
+\end{lstlisting}
+
+为了方便，我们还定义一个新 NewDocumentCommand 命令，便于快速引
+用。\verb|{\yahei{这是新定义的雅黑字体样例。}}| 的效果
+如：{\yahei{这是新定义的雅黑字体样例。}}
+
+特别注总，命令要放在一个 group 里，即用 \verb|{}| 围起来，否则从当
+前位置起，所有中文字体都改了。实际，fontspec 提供类似功能，具体请参
+考 fontspec 文档。如：
+
+\begin{center}
+  \verb|\fontspec{⟨font name⟩}[⟨fontfeatures⟩]| 和 \verb|\newfontfamily|
+\end{center}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
