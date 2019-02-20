@@ -1,10 +1,10 @@
 \begin{appendices}
 
-\chapter{Long Code Line}
-\label{cha:long-code-line}
+\chapter{Too Big to Fit}
+\label{cha:too-big-fit}
 
-\section{Appendix Notes}
-\label{cha:appendix-notes}
+\section{Appendix Tips}
+\label{cha:appendix-tips}
 
 The \textit{appendix} package provides \textit{appendices}
 environment that renames each chapter to Appendix A, Appendix B,
@@ -87,6 +87,153 @@ template},label={lst:pgfplots-template},basicstyle=\tiny\ttfamily,linewidth=\tex
 \end{figure}
 \end{lstlisting}
 \end{minipage}
+
+\section{missTime}
+\label{sec:bash-misstime}
+
+\begin{minipage}{0.8\linewidth}
+\begin{lstlisting}[language=bash,caption={missTime Line by Line},label={py-misstime-line-by-line},basicstyle=\tiny\ttfamily,linewidth=\textwidth]
+#!/bin/bash
+
+if [[ "$1" = @(-h|--help) ]]
+then
+    printf 'Usage: bash missTime [<refr-Yy/Nn> [<number-of-test> [<input-file>]]]\n
+refr-Yy/Nn:\t\trefresh or not (default: Y).
+number-of-test:\t\tnumber of tests (default: 5).
+input-file:\t\tfile contains the log.\n
+bash missTime y 2 input.raw
+cclog hpc access 5m | grep -E "TCP_HIT.*iosapps.itunes.apple.com.*headers=" | tail -2 | bash missTime\n'
+
+    exit 0
+fi
+
+_refr_opt=${1:-Y}
+if [[ ! "$_refr_opt" =~ ^[YyNn]$ ]]
+then
+    printf '%s: Yy/Nn expected!\n' "$1"
+    exit 1
+fi
+
+_num_of_tests=${2:-5}
+if [[ ! "$_num_of_tests" =~ ^[0-9]*$ ]]
+then
+    printf '%s: integer expected!\n' "$_num_of_tests"
+fi
+
+_infd=0; [[ -f "$3" ]] && exec {_infd}< "$3"
+
+read -r _ _ _ _ip _ < <(ip -4 -o addr show scope global dev bond0) ; _ip="${_ip%/*}"
+
+_headers_regex=$'\^\~\$headers=\'(.*)\)@\|#\(\'' #'
+_https_regex='^https://'
+_refr_port="770"
+
+_log_dir="${HOME}/logs-missTime"
+mkdir -p "${_log_dir}"
+for f in *.log; do mv "$f" "${_log_dir}/" 2>/dev/null; done
+
+while IFS=$' \t\n' read -p "Log expected:" -u "${_infd}" -r line
+do
+    mapfile -t _log_array < <( awk -F'[[:space:]]*\\)@(in|out)#\\([[:space:]]*' '{ for (i = 1; i <= NF; ++i) print $i; }' <<< "${line}" )
+    
+    _std_log="${_log_array[0]}" _inr_log="${_log_array[1]}"
+    [[ "${_log_array[2]}" ]] && _ext_log="${_log_array[2]}"
+
+    read -ra _std_array <<< "${_std_log}" ; _log_time="${_std_array[0]}" _url="${_std_array[6]}"
+
+    if [[ ! "${_inr_log}" =~ $_headers_regex ]]
+    then
+	printf '%s: log format error.\n' "${_log_time}"
+	continue
+    fi
+    tmp_headers="${BASH_REMATCH[1]})@|#(" _headers_array=()
+    while [[ $tmp_headers ]]
+    do
+	_headers_array+=( "${tmp_headers%%\)\@\|\#\(*}" )
+	tmp_headers="${tmp_headers#*\)\@\|\#\(}"
+    done; unset tmp_headers
+    
+    IFS='/:' read -r _scheme _ _ _host _uri <<< "${_url}"
+    if [[ "${_scheme}" == "https" ]]
+    then
+	_protocol_port=443
+    else
+	_protocol_port=80
+    fi
+    _resolve="${_host}:${_protocol_port}:${_ip}"
+
+    for f in full real; do declare "_$f"="${_log_time}-${_num_of_tests}-$f.log"; done
+    for f in "${_full}" "${_real}"; do echo -n >| "$f"; done  
+    {
+	printf -- '########## missTime ##########\n'
+	printf 'HN:\t%s\nIP:\t%s\nLOG:\t%s\nRefr:\t%s\nTest:\t%s\n\n' "$(hostname)" "${_ip}" "${_log_time}" "${_refr_opt}" "${_num_of_tests}"
+	printf 'cclog:\n%s\n\n' "${line}"
+	printf 'standard part:\n%s\n\ninternal part:\n%s\n\n' "${_std_log}" "${_inr_log}"
+	[[ "${_ext_log}" ]] && printf 'external part:\n%s\n\n' "${_ext_log}"
+	printf 'curl -ksSI \\\n' ; printf -- $'-H \'%s\' \\\n' "${_headers_array[@]}" ; printf -- $'-H \'x-c3-debug:enabled\' \\\n--resolve \'%s\' \\\n\'%s\'\n\n' "${_resolve}" "${_url}" #'
+	printf 'curl -ksSI ' ; printf -- '-H %q ' "${_headers_array[@]}" ; printf -- '-H %q --resolve %q %q\n\n' "x-c3-debug:enabled" "${_resolve}" "${_url}"
+    } | tee -a "${_full}"
+    
+    _headers_array=( "${_headers_array[@]/#/-H}" )
+    printf '' >| "curl-reply.log"
+    ( set -x; { curl -ksSI "${_headers_array[@]}" -H "x-c3-debug:enabled" --resolve "${_resolve}" "${_url}" ; } 2>&1 ) | tee -a "${_full}" "curl-reply.log" 
+
+\end{lstlisting}
+\end{minipage}
+
+\begin{minipage}{0.8\linewidth}
+\begin{lstlisting}[language=bash,caption={missTime Line by Line},label={py-misstime-line-by-line},basicstyle=\tiny\ttfamily,linewidth=\textwidth]
+    [[ "$_refr_opt" == [Nn] ]] && continue
+    
+    declare -A _reply_array=()
+    while IFS=' :' read -r key value
+    do
+	[[ "$key" && "$key" != [[:space:]] && "$key" != + ]] || continue
+	_reply_array[${key}]=${value%$'\r'}
+    done < "curl-reply.log"
+    
+    {
+	# for key in "${!_reply_array[@]}"; do printf '%s: %s\n' "$key" "${_reply_array[$key]}" ; done ; printf '\n'
+	printf 'X-Cache: %s\n' "${_reply_array[X-Cache]}" ; printf 'X-Cache-Remote: %s\n' "${_reply_array[X-Cache-Remote]}" ; printf 'CC_CACHE: %s\n\n' "${_reply_array[CC_CACHE]}"
+    } | tee -a "${_full}"
+
+    shopt -q extglob; _extglob_set=$? ; (( _extglob_set )) && shopt -s extglob
+    _delete_url=${_reply_array[X-True-Cache-Key]#http?(s)://}
+    (( _extglob_set )) && shopt -u extglob
+
+    [[ "${_scheme}" == "https" ]] && _delete_url=${_delete_url/\//:443/}
+    _refr_url=http://127.0.0.1:${_refr_port}/delete/${_delete_url}
+    printf 'refr url: %s\n' "${_refr_url}" | tee -a "${_full}"
+    
+    for i in $(seq 1 ${_num_of_tests})
+    do
+	printf -- '---%sth---\n' "${i}" | tee -a "${_full}" "${_real}"
+
+	printf 'refr code: ' | tee -a "${_full}"
+	curl -ksSo /dev/null -w "%{response_code}" -H "User-Agent: DataDelete" "${_refr_url}" | tee -a "${_full}"
+	printf '\n' | tee -a "${_full}"
+	
+	sleep 0.05s
+	{ time curl -kLsSvo /dev/null "${_headers_array[@]}" -H "x-c3-debug:enabled" --resolve "${_resolve}" "${_url}" 2>&1 | awk 'BEGIN {IGNORECASE=1}; /<[[:space:]].*[-_]cache:/ {print substr($0, 3) }' ; } 2>&1 | tee -a "${_full}"
+
+	ed -s "${_full}" <<< $'$-3d\nw'
+	ed -s "${_full}" <<< $'$-3,-2p' >> "${_real}"
+    done
+    printf '%s\n' '1d' w | ed -s "$_full" # sed -i -e '1d' "$_full"
+    
+done
+
+rm -f "curl-reply.log"
+\end{lstlisting}
+\end{minipage}
+
+
+
+
+
+
+
+
 
 \newpage{}
 \listoffigures{}

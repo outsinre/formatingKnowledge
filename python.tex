@@ -1,0 +1,204 @@
+\chapter{Python Programming}
+\label{cha:python-programming}
+
+\section{ABCs}
+\label{sec:py-abcs}
+
+\begin{enumerate}
+\item \href{https://stackoverflow.com/a/1520342}{Dynamic
+    typing}. Contrary to static language, dynamic programming
+  don't have declaration or data type associated.
+\item Interpret and execute: source code -> bytecode -> machine
+  code. It is different from C/CPP compilation.
+\item Object-oriented Programming (OOP). Everything is object,
+  variables included.
+\item Easy but powerful language for scripting and rapid
+  application development.
+\end{enumerate}
+
+\paragraph{Dynamic versus Static}
+
+Static typed programming language do \textit{type checking}
+(i.e. the process of verifying and enforcing the constraints of
+types) at \textit{compile-time} as opposed to run-time. Type is
+associated with compile-time identifiers.
+
+Dynamic typed programming language do \textit{type checking} at
+\textit{run-time} as opposed to compile-time. Type is associated
+with run-time values.
+
+\begin{lstlisting}[language=python,caption={Python Type Checking},label={lst:py-type-checking}]
+def silly(a):
+    if a > 0:
+        print('greater than zero')
+    else:
+        print(5 + '3')
+
+
+silly(1)
+silly(-1)
+\end{lstlisting}
+
+Statement \verb|silly(1)| executes perfectly fine and prints
+'greater than zero'. Immediately, the next statement
+\verb|silly(-1)| raises type error:
+
+\begin{lstlisting}
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+\end{lstlisting}
+
+\section{Terminology}
+\label{sec:py-terminology}
+
+\begin{enumerate}
+\item the prompt of shell.
+\item Procedure-oriented programming (imperative); functional
+  programming (declarative).
+  \begin{enumerate}
+  \item imperative statement vs functional exprenssion/declaration.
+  \item a statement may include an expression (including
+    assignment) or may be just a definition or declaration.
+  \item the key diff is \textit{side effect}.
+  \end{enumerate}
+\item literal constants: number \& string
+\end{enumerate}
+
+\section{Execution}
+\label{sec:py-execution}
+
+To execute Python code, we have basically two forms, namely the
+\textit{interactive shell} and \textit{source code
+  interpretation}.
+
+To get out of an interactive envrionment, we press \verb|Ctrl-d|
+or input \verb|exit()|. Please be noted to add the parentheses pair.
+
+\section{Syntax}
+\label{sec:py-syntax}
+
+Preliminary summaries:
+
+\begin{itemize}
+\item Comments are any text to the right of a \# symbol.
+\item Literal constants include \textit{numbers} (integers and
+  floats) and \textit{strings}, like \verb|52.3E-4|.
+  \begin{itemize}
+  \item Compared to literal constants, Python has
+    \textit{variable} which store values that vary during execution.
+  \item There is no separate integer type such as \textit{long} or
+  \textit{short}.
+  \item There is no separate \textit{char} type either.
+  \item Strings are enclosed with single, double and even triple
+    quotes. Triple quotes can span over multiple lines. Choose one
+    appropriately. For instance, for a string containing both
+    double and single quotes, we use triple quotes on the outer side.
+  \end{itemize}
+\item Apart from numbers and strings, we can define our own
+  variable types as \textit{class}.
+\item Python starts counting from $0$.
+\item Surround top-level function and class definitions with two blank lines.
+\end{itemize}
+
+\section{Identifier}
+\label{sec:py-identifier}
+
+Variables are just an example of identifiers. Identifiers are
+names given to identify something such as variables, function
+names, class etc.
+
+Identifiers follow the following rules:
+
+\begin{itemize}
+\item The first character must be a letter of alphabeta (ASCII) or an
+  underscore \verb|_|.
+\item The rest of an identifier can consist of letters,
+  underscores, and digits.
+\item Identifiers are case-sensitive.
+\end{itemize}
+
+Examples of invalid identifiers are:
+
+\begin{lstlisting}
+2things, this contains spaces, my-name, <abc
+\end{lstlisting}
+
+\verb|_my_name| is a valid identifier.
+
+\section{Strings}
+\label{sec:py-strings}
+
+As mentioned in the above section, strings belong to literal
+constants that are immutable like that in C/CPP. However, we can
+construct a new string by different techniques such as the
+\textit{format} method.
+
+\begin{lstlisting}[language=python,caption={Python Strings},label={lst:py-strings}]
+# comment to the right of symbol '#'
+print('hello, world')
+
+# number and string
+age = 20
+name = 'jimgray'
+
+# 0 and 1 represents the argument indices
+print('{0} is {1} years old when he went to HKUST'.format(name, age))
+print('He was at his {1} years old'.format(name, age))
+# give parameter a name
+print('we can name the parameters: {name} is {age}'
+      'years old when he went to HKUST'.format(name=name, age=age))
+print('{0:.3f}'.format(1.0/3))
+print('{0:_^11}'.format('hello'))
+# formated string (f-string) is an expression evaluated at runtime
+print(f'his name is {name} and he is {age} years old.')
+print('''this a multi-line string.
+The second sentence.''')
+\end{lstlisting}
+
+\textit{print} append newline \verb|\n| to each statement. We can
+specify the \textit{end} parameter to terminate this behaviour
+like:
+
+\begin{lstlisting}[language=python]
+print('a', end='')
+print('b', end='')
+\end{lstlisting}
+
+\subsection{Escape Sequence}
+\label{sec:py-escape-sequence}
+
+Although we can enclose a string containing a quotatation mark
+with double quotes, \textit{backslash} can escape special
+symbols. For example, \verb|"what's your name"| are equal to
+\verb|'what\'s your name'|.
+
+To escape the backslash itself, we use double backslash like
+\verb|\\|.
+
+If we want to specify a two line string, just insert a \verb|\n|
+symbol. Similarly, we have \verb|\t| for tabular symbol.
+
+You may already know that a bare backslash at the end of line
+continues the previous element like:
+
+\begin{lstlisting}
+"this is the 1st string. \
+this is the 2nd string."
+\end{lstlisting}
+
+\subsection{Raw String}
+\label{sec:py-raw-string}
+
+Raw string means ignoring escape sequences within the string. Just
+prepend the string with \verb|r| or \verb|R|.
+
+\begin{lstlisting}[language=python,caption={Raw String},label={lst:raw-string}]
+r"Newlines are indicated by \n"
+\end{lstlisting}
+
+When dealing with \textit{regular expression}, we'd better use raw
+string, which otherwise would require a log of backslash escaping.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
