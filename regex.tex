@@ -1,0 +1,81 @@
+\chapter{Regular Expression}
+\label{cha:regular-expression}
+
+To learn regular expression, read
+[Quickstart](https://www.regular-expressions.info/quickstart.html)
+first. Check the bit-by-bit
+\href{https://www.regular-expressions.info/tutorial.html}{authoritative
+  tutorial} for details. To test and check regular expressions, go
+to \href{https://regex101.com}{regex101.com}.
+
+Pay attention to the terms \uline{character class} \lstinline|[ ]|
+and \uline{capture group} \lstinline|( )|. A character class match
+\textit{one and only one} character. So \lstinline|a[1-9]| does
+not match a single character \verb|a|.
+
+In regular expression, a dot matches any character except visual
+newline. A negated character class matches a newline instead like
+\lstinline|[^a-z]|.
+To avoid that, use \lstinline|[^a-z\r\n]|.
+
+Regex is not intended for or good at \textit{inverse} search. But
+we can mimic this behavior by \textit{lookaround} at
+\href{https://www.regular-expressions.info/lookaround.html}{Lookahead
+  and Lookbehind Zero-Length Assertions}. It is quite
+\href{https://stackoverflow.com/q/406230}{useful} when we want to
+exclude something when matching.
+
+For example, if the command is \lstinline|grep|, use option
+\lstinline|-P| to enable \uline{PCRE} engine. The code below
+excludes entries of which the URI part does not contain
+\textit{itunes-assets}.
+
+\begin{lstlisting}
+cclog hpc access 201902141200 201902151200 | \
+grep -P -m2 'http://aod\.itunes\.apple\.com/(?!itunes-assets).*headers='
+\end{lstlisting}
+
+However, we can resort to \lstinline|-v| to do the same work.
+
+\begin{lstlisting}
+cclog hpc access 201902141200 201902151200 | \
+grep -m2 'http://aod\.itunes\.apple\.com/.*headers=' \
+grep -v 'itunes-assets'
+\end{lstlisting}
+
+So when to use \textit{lookahead} and when to use
+\textit{lookbehind}? From my experience, if you don't want
+to match something \textit{immediately} following a
+\textit{literal string}, then use \textit{lookahead}. Similarly,
+if you don't want to match something immediately preceding a
+literal literal string, use \textit{lookbehind}.
+
+Like \lstinline|^| and
+\lstinline|$| (for start and end of \textit{string}),
+\lstinline|\b| is also an anchor for start and end of
+\textit{word} like \lstinline|\bhello\b|. It can be called as
+\textit{boundary}. The counterpart \lstinline|\B| matches at every
+position where \lstinline|\b| cannot match.
+
+To match a valid IPv4 address, use:
+
+\begin{lstlisting}
+^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$
+\end{lstlisting}
+
+When using regular expression, many commands
+(i.e. \lstinline|sed|) use forward slash \verb|/| as
+delimiters. In such cases, forward slash should be escaped. You
+can use another delimter (i.e. \verb|#|) to avoid escaping.
+
+Most of the time, forward slash is
+\href{https://serverfault.com/q/892905}{not special} and escaping
+is \href{https://stackoverflow.com/q/6076229}{not required}.
+
+Recall in C language, a variable matches
+\lstinline|[A-Za-z_][A-Za-z_0-9]*|.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

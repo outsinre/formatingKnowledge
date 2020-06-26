@@ -1,0 +1,75 @@
+\chapter{TCP/IP}
+\label{cha:tcpip}
+
+\section{Segment Datagram and Frame}
+\label{sec:segment-datagram-frame}
+
+Before everything else, let's have a look at terminologies
+\textit{segment}, \textit{datagram} and \textit{frame}.
+
+Generally speaking, they refer to a \textit{unit} of data
+transmitted through the protocol stack without differentiating
+protocols.
+
+However, when talking about \textit{segment}, we mean a TCP
+packet, including both the TCP headers and TCP payload. On the
+other hand, \textit{datagram} means payload and headers of an IP
+packet. The two terms are also called \textit{packet} in
+general. Interestingly, a UDP packet is also called
+datagram. Maybe this is due to UDP's \textit{at best} strategy.
+
+Lastly, a \textit{frame} is a \textit{Link layer} (mostly the
+Ethernet) unit. But it is weird to call it a packet.
+
+You may also hear of \textit{fragment}. When an IP datagram is too
+large to fit a MTU \ref{sec:mss-mtu}, the payload part is split
+into smaller parts, forming multiple new units. This is also
+called \textit{fragmentation}.
+
+By the way, in the Physical layer, we usually use
+\textit{transmit} or \textit{transmission}. More details about
+those terms, read
+\href{https://stackoverflow.com/a/11637061}{Definition of Network
+  Units}.
+
+\section{MTU and MSS}
+\label{sec:mtu-mss}
+
+Let's talk about \textit{Maximum Transmission Unit (MTU)}
+first. It is the largest IP packet that can be transmitted over
+\textbf{all} links from source to destination. So MTU refers to
+the maximum payload of Ethernet frames, \textbf{not} including
+frame headers (20 bytes).
+
+It is a physical parameter (i.e. set in router) that specifies the
+size of the largest protocol data unit (i.e. IP datagram) that can
+be sent in a single link layer transmission. MTU usually appear in
+association with network Interfaces (i.e. routers, PC NICs, serial
+ports etc.).
+
+\textit{Maximum Segment Size (MSS} is confined to MTU. It refers
+to the maximum amount of application-layer data that can be placed
+in a TCP segment, \textbf{not} including segment headers or Option
+fields. So we can say it is a parameter of the \textit{Options
+  fields}. Although it is named after \textit{segment}, MSS does
+not count TCP headers and Options field.
+
+So both terms refer to payload only! Their relations can be
+expressed by equation \eqref{eq:mtu-mss}.
+
+\begin{equation}
+  \label{eq:mtu-mss}
+    \text{MTU} = \text{IP Headers (20 bytes)} + \text{TCP Headers (20 bytes)} \text{ [+ TCP Options]} + \text{MSS}
+\end{equation}
+
+For general Ethernet links, MSS is $1500 - 20 - 20 = 1460$. For
+Point-to-Point Protocol over Ethernet (PPPoE), it requires extra 8
+bytes (6 bytes PPPoE plus 2 bytes PPP) overhead. Therefore the MTU
+is $1500 - 8 = 1492$ bytes and corresponding MSS is 1452 bytes.
+
+% https://blog.zenlab.it/traceroute-vs-ping-vs-mtr/
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

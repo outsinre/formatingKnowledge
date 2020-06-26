@@ -1,0 +1,108 @@
+\chapter{ICT Operation}
+\label{cha:ict-operation}
+
+\lstset{language=bash}
+
+\section{Cheat Sheet}
+\label{sec:linux-cheatsheet}
+
+Table \ref{tab:verify-linux-release} for release information;
+\ref{tab:linux-account-management} for account information; table
+\ref{tab:cmd-rock-tips} for handy tips.
+
+\begin{table}[!htb]
+  \centering
+  \begin{tabular}[!htb]{l|l}
+    \toprule
+    Command & Usage \\
+    \midrule
+    \lstinline|fgrep -qa docker /proc/1/cgroup; echo $?| & Docker container \\
+    \lstinline|cat /etc/{os,redhat}-release; rpm -q centos-release| & Distribution name \\
+    \bottomrule
+  \end{tabular}
+  \caption{Verify Linux Release}
+  \label{tab:verify-linux-release}
+\end{table}
+
+\begin{table}[!htb]
+  \small
+  \centering
+  \begin{tabular}[!htb]{l|l}
+    \toprule
+    Command & Usage \\
+    \midrule
+    \lstinline|groupadd -g 2000 name| & Creata a group \\
+    \lstinline|useradd -ms /bin/bash -u 1000 -g name name| & Create an account and specify the login group \\
+    \lstinline|groupmod -g 1000 -n newname name| & Change group ID and name \\
+    \lstinline|usermod -u 1000 -g newname -aG wheel name| & Change account ID, login group ID, and append to the 'wheel' group \\
+    \lstinline/gpasswd [-a | -d] name name/ & Add or delete account 'name' to group 'name' \\
+    \lstinline/getent [ passwd | group | hosts ]/ & Administrative database \\
+    \lstinline|groups username| & Groups username joins \\
+    \lstinline|users| & Users logged in to the system \\
+    \lstinline|id| & Print uid, gid and groups \\
+    \bottomrule
+  \end{tabular}
+  \caption{Linux Account Management}
+  \label{tab:linux-account-management}
+\end{table}
+
+\begin{table}[!htb]
+  \small
+  \centering
+  \begin{tabular}[!htb]{l|l}
+    \toprule
+    Command & Usage \\
+    \midrule
+    \lstinline|cat >> file.md << EOF| & Append contents to a file from STDIN with a \textit{here document} \\
+    \bottomrule
+  \end{tabular}
+  \caption{Rock Tips}
+  \label{tab:cmd-rock-tips}
+\end{table}
+
+\section{Linux Tools}
+\label{sec:linux-tools}
+
+\subsection{free}
+\label{sec:linux-free}
+
+\lstinline|free -hwt| commands display the amount of memory
+allocations, by analyzing the contents of file
+\lstinline|/proc/meminfo|:
+
+\begin{lstlisting}[caption={Free Memory},label={lst:free-mem},basicstyle=\tiny\ttfamily]
+              total        used        free      shared     buffers       cache   available
+Mem:           3.7G        781M        1.5G        160M        558M        985M        2.8G
+Swap:          1.0G          0B        1.0G
+Total:         4.7G        781M        2.5
+\end{lstlisting}
+
+Always keep euqation:
+
+$$\text{total} = \text{used} + \text{free} + \text{buffers} + \text{cache}$$
+
+in mind.
+
+\begin{itemize}
+\item \textit{used} memory is allocated to user space processes.
+\item \textit{free} memory is not allocated or freed up.
+\item textit{shared} memory (mostly by \textit{tmpfs} is part of
+  \textit{used}, shared among processes.
+\item Kernel \textit{buffers} and \textit{cache} is allocated to
+  kernel itself. \textit{cache} refers to memory used by the
+  \textit{page cache} and \textit{reclaimable slab}s. For details
+  about \textit{cache} and \textit{slab}, please read
+  \ref{sec:os-memory}.
+\item \textit{available} is the estimated amount of memory for
+  starting new applications, \textit{without} swapping.
+\end{itemize}
+
+Ideally, \textit{available} should be the sum of \textit{free},
+\textit{buffers} and \textit{cache}. However, \textbf{not all}
+\textit{reclaimable slabs} can be freed in time as some may be in
+use. So the actual \textit{available} size is slightly smaller.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

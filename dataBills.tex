@@ -1,6 +1,20 @@
 \chapter{Data Bills}
 \label{cha:data-bills}
 
+\section{Contact}
+\label{sec:billing-contact}
+
+\begin{table}[!h]
+  \centering
+  \begin{tabular}[!h]{c}
+    \toprule{}
+    HU Zhan \\
+    zhan.hu@chinacache.com \\
+    \bottomrule
+  \end{tabular}
+  \caption{Contact}
+\end{table}
+
 \section{95th Percentile}
 \label{sec:95th-percentile}
 
@@ -18,24 +32,26 @@ a higher
 
 There are two critical factors involved in this scheme, namely the
 \textit{percentile} and the \textit{sampling interval}. Usually,
-they are 95 and 5 respectively and therefore it is also called
-\textit{95/5 percentile.}
+they are 95\% and 5m respectively and therefore it is also called
+\textit{95/5 percentile} (or \textit{95 percentile}).
 
 Given a monthly billing cycle, 95/5 percentile allows a customer
 to have a short (i.e. threshold is $30 \times 24 \times 5\% = 36$
-hours) burst in in traffic without overage charges. That is to
-say, 95\% of the time, the usage is below this
-ammount. Conversely, 5\% of the samplings may be bursting above
+hours) burst in in traffic without overage charges. More
+specifically, bandwidth could be used at a higher rate for up to
+$24 \times 60 \times 5\% = 72m$ a day with no financial
+penalty. That is to say, 95\% of the time, the usage is below this
+amount. Conversely, 5\% of the samplings may be bursting above
 this rate.
 
-\begin{figure}[!htbp]
+\begin{figure}[!htb]
   \centering
   \includegraphics[scale=.6]{burstableBilling}
   \caption{95/5 Percentile}
   \label{fig:95-percentile}
 \end{figure}
 
-How is \textit{this ammount} or \textit{this rate} is calculated?
+How is \textit{this amount} or \textit{this rate} is calculated?
 Usually a time-bandwidth chart is drawn to visualize bandwidth
 usage through a bill cyle like figure \ref{fig:95-percentile}
 whose \textit{integral area} reflects the total data transmitted.
@@ -48,21 +64,17 @@ by the duration (5m = 300s).
 At the end of the month, all the bandwidth samples
 ($30 \times 24 \times 60 \div 5 = 8640$) are sorted from highest
 to lowest. The top 5\% ($8640 \times 5\% = 432$) samples is thrown
-away and the next highest sample \uline{433} becomes the billable
-use for the entire month.
-
-Obviously, $432 \times 5 \div 60 = 36$. More specifically,
-bandwidth could be used at a higher rate for up to
-$24 \times 60 \times 5\% = 72$ minutes a day with no financial
-penalty.
+away and the next highest sample $432 + 1 = 433$ becomes the
+billable use for the entire month. Obviously,
+$432 \times 5 \div 60 = 36h$.
 
 In the figure \ref{fig:sorted-95th-percentile}, the
 billable value falls around 6Mbps, or 60\% of the highest
 burst. From this figure, we find the sorted slope is quite
 steep. The sharp burst contributes a lot to the final bill though
-not much bandwidth is used.
+not much bandwidth is used (small area).
 
-\begin{figure}[!htbp]
+\begin{figure}[!htb]
   \centering
   \includegraphics[scale=.5]{95th-chart-sorted}
   \caption{Sorted Percentile}
@@ -71,29 +83,26 @@ not much bandwidth is used.
 
 Conversely, at any moment during the billing cycle, even if peak
 traffic only appears for a short \textit{instant} and no
-additional traffic is generated, the billing ammount can be
-sbustantially higher than average usage billing.
+additional traffic is generated, the billing amount can be
+sbustantially higher than average usage billing. This is not the
+end of the story. Although we get the billable value, it may not
+take affect when paying bills. For example, what if all customers'
+95th percentile value are pretty small? In that case, the ISP's
+infrastructure would be wasted and lose money.
 
-This is not the end of the story. Although we get the billable
-value, it may not take affect when paying bills. For example, what
-if all customers' 95th percentile valie are pretty small? In that
-case, the ISP's infrastructure would be wasted and lose money.
+In reality, 95th percentile assumes a \textit{base commit rate}
+(and fees associated) that must be guranteed by customers. The
+95th percentile value only takes effect when it is higher than the
+base commit rate, otherwise the base value would be used
+irrespective of the 95th percentile. The higher the base commit
+rate is, the cheaper the bandwidth fee becomes.
 
-95th percentile also assumes a \textit{base commit rate} (and fees
-associated) that must be guranteed by customers. If the 95th
-percentile value only take effect when it is higher than the base
-commit rate, otherwise the later value is used irrespective of the
-real 95th percentile value. The higher the base commit rate is,
-the cheaper the bandwidth fee becomes.
-
-Base commit rate is \textit{not} CIR where bandwidth must be
-reserved for a customer but just a billing gurantee even the real
-bandwidth usage is 0.
-
-Base commit rate is fairly to both the carrier and the customer in
-terms of the service delivered to the customer and the ability of
-the carrier to scale its infrastructure to meed different
-customers' needs.
+Base commit rate is \textit{not} CIR (where hard bandwidth must be
+reserved for a customer) but just a billing gurantee even the real
+bandwidth usage is 0. It is fairly to both the carrier and the
+customer in terms of the service delivered to the customer and the
+ability of the carrier to scale its infrastructure to meed
+different customers' needs.
 
 \section{Other Billing Methods}
 \label{sec:other-billing-methods}
@@ -113,15 +122,17 @@ will simply record how much data you moved over the circuit for
 that interval. It is also used by some web-based VPS platforms to
 bill customers.
 
-You may think of \textit{average rage bill} where customers pay
-for their average committed bandwidth. However, this scheme
-requires infrastructure overprovisioning on the part of ISP to
-meet customers' peak bandwidth usage. It is not used in real
-world!
-
 You can read more about billing methods on
 \href{https://www.semaphore.com/95th-percentile-bandwidth-metering-explained-and-analyzed/}{billing
-  methods explained and analyzed}.
+  methods explained and analyzed} and check figure
+\ref{fig:billing-methods}.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[scale=0.17,angle=90]{data-billing}
+  \caption{Billing Methods}
+  \label{fig:billing-methods}
+\end{figure}
 
 %%% Local Variables:
 %%% mode: latex

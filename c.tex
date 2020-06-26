@@ -70,7 +70,7 @@ C 语言编译后虚拟内存分很多区域。我们这里说的是虚拟内存
 只有一个程序在运行，占有全部内存。实际中程序执行时所用的内存由操作
 系统分配在物理内存上：虚拟内存到物理内存的映射！
 
-\begin{figure}[!htbp]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=.8\textwidth]{cMemoryLayout2}
   \caption{C Memory Layout}
@@ -141,7 +141,7 @@ printf("%d", 3);
 数组和链表都是线性存储结构，但实现方法不同，通常前者在栈上由机器自
 动分配，后者在堆上由程序动态分配。实现方法的不同表现出对应的优缺点。
 
-\begin{table}[!htbp]
+\begin{table}[!htb]
   \centering
   \begin{tabular}{c|c|c}
     \toprule

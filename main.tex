@@ -7,19 +7,24 @@
 
 % Tell `include' to only include these sources in the body.
 \includeonly{preface,resources,chinese,tutorial,
-  combinatorics,tree,stack,c,cpp,python,bash,
-  sequenceOfNumber,dataBills,netools,brainteaser,aat,chemistry,
+  combinatorics,sequenceOfNumber,
+  terminologies,os,dns,http,ictOP,
+  tree,stack,regex,
+  bash,c,cpp,python,
+  tcpIP,dataBills,netools,
+  brainteaser,aat,
+  chemistry,
   appendices,postscript}
 
 \begin{document}
 
 \frontmatter{}
 
-\title{Miscellanies}
-\author{西二闲画生\\
+\title{ICT}
+\author{西二闲画话\\
   Department of Life,\\
   Zhonghua Uni.,\\
-  WH, China\\
+  Wuhan, China\\
   \emph{zhu@riseup.net}}
 \date{\today}
 \maketitle
@@ -40,17 +45,27 @@
 \include{combinatorics}
 \include{sequenceOfNumber}
 
+\part{ICT}
+\label{part:ict}
+\include{terminologies}
+\include{os}
+\include{dns}
+\include{http}
+\include{ictOP}
+
 \part{Algorithm}
 \include{tree}
 \include{stack}
+\include{regex}
 
 \part{Programming}
+\include{bash}
 \include{c}
 \include{cpp}
 \include{python}
-\include{bash}
 
 \part{Networking}
+\include{tcpIP}
 \include{dataBills}
 \include{netools}
 
@@ -61,7 +76,6 @@
 \part{Chemistry}
 \label{part:chemistry}
 \include{chemistry}
-
 
 % References before Appendix.
 \printbibliography[heading=bibintoc,title={Reference}]{}

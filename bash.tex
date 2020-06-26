@@ -3,6 +3,20 @@
 
 \lstset{language=bash}
 
+\section{Contact}
+\label{sec:bash-contact}
+
+\begin{table}[!h]
+  \centering
+  \begin{tabular}[!h]{c}
+    \toprule{}
+    HU Zhan \\
+    zhan.hu@chinacache.com \\
+    \bottomrule
+  \end{tabular}
+  \caption{Contact}
+\end{table}
+
 \section{Stop List}
 \label{sec:bash-stop-list}
 
@@ -28,7 +42,6 @@
 \item Quoting: escape character \textbackslash{}, single quotes,
   double quotes, ANSI-C Quoting
 \item declare -p name
-\item \verb|sed -n l|, \verb|cat -e|
 \item Term \textit{newline} refers to a \textit{visual} and
   \textit{electronical} new line, which is what is shown (a real
   new line) when Enter key is pressed.
@@ -93,7 +106,7 @@ on how Bash processes script files or command lines, which helps
 we understand the basic logic behind. Figure \ref{fig:bash-parser}
 is a simplified image illustration.
 
-\begin{figure}[!htbp]
+\begin{figure}[!htb]
   \centering
   \includegraphics[width=.8\textwidth]{bash-parser}
   \caption{Bash Parser}
@@ -125,63 +138,38 @@ Basically, the parser carries out the following procedures:
 \item Execute the command.
 \end{enumerate}
 
-\section{CRLF}
-\label{sec:crlf}
+\section{Command History}
+\label{sec:command-history}
 
-This sections talks about keys (and their names) and keybord.
+Bash provides command-line tools for editing and manipulating
+command history. Check the \uline{HISTORY EXPANSION} as per the
+man
+page. \href{https://samrowe.com/wordpress/advancing-in-the-bash-shell/}{Advancing
+  in the Bash shell} is an excel tutorial.
 
-We have \textit{physical} keyboard with labels like 1, 2, Enter,
-Delete etc. The physically pressed keys are captured by OS and
-then translated \textit{integer keycodes}. Programs read the
-keycodes and interpret them as appropriate \textit{logical}
-keys.
+One of the those is \lstinline|history|, listing previously
+executed Bash commands. \lstinline|fc| is the counterpart for Sh
+shell.
 
-We can change keycodes passed from OS to a program like switching
-left Ctrl and Caps. When Caps key is pressed, the Ctrl keycode is
-sent to the program.
+There exist a list of internal variables related to history
+commands, like:
 
-Several logical keys have their own names. Specifically, DEL, ESC,
-LFD, SPC, RET, TAB, and \textit{newline} all stand for themselves
-when seen in online posts. Name \verb|C-m| (pressing the
-Return key) is translated to logical RET. \verb|C-k| for
-pressing Control and \verb|k| simutaneously. \verb|C-j| is
-translated to LFD. Don't be fooled. Logical name \verb|DEL|
-corresponds to \verb|Backspace| on keyboard, not Delete.
+\begin{lstlisting}
+$HISTCMD $HISTFILESIZE !N !-N !! !$ 
+\end{lstlisting}
 
-Then let's have a look at ancient typewriter, comprising
-\textit{Carriage Return} that helps feed a new line. When a new
-line is required, the carriage return pulls back the typing head
-and then a new paper line is fed up. So in the old times, a new
-line consists of a Carriage Return and a Line Feed.
+Especially, \lstinline|!!| is a synonym for
+\lstinline|!-1|. \lstinline|!$| expands to the last word of the
+preceding command. Usually, it will the the last argument.
 
-In the PC age, the corresponding keyboard key is Enter. When it is
-pressed, the logical name is ENTER, also called
-(\textit{electronical}) \textit{newline}. So it is not uncommon
-that the Enter key has an arraw line as depicted in
-\ref{fig:enter-return-key}. The vertical line means line feed
-while the horizontal arrow means carriage return.
+Generally, we have \uline{Event Designator} that select a command
+from history, \uline{Word Designator} that select a \textit{Bash
+  word} from the selected command, and \uline{Modifiers} are a
+sequence of modifiers to adjust the selected command. An event
+designator starts with the exclamation mark \uline{!} .
 
-\begin{figure}
-  \centering
-  \includegraphics{return-enter-key}
-  \caption{Enter/Return Key}
-  \label{fig:enter-return-key}
-\end{figure}
-
-The two operations can be named as \verb|CR| and \verb|LF|
-respectivelly. Programing languages, Bash included, use
-\lstinline|\r| and \lstinline|\n| to denote the two names. In
-Linux, it is \verb|\n|, while in Windows it is \verb|\r\n|. Mac
-OS, to the contrary, is \verb|\r|. We call this \textit{line
-  ending scheme}. It is critical to be aware of line ending
-difference, especially when web techniques are involved like
-\ref{lst:curl-crlf}.
-
-\begin{itemize}
-\item \verb|C-m, ^M, \r, Carriage Return, RET| are all the same
-  thing.
-\item \verb|C-j, ^J, \n, Line Feed, LFD| as well.
-\end{itemize}
+One of the most useful modifier is \textit{p} that print but not
+execute the selected command.
 
 \section{Code Disassembling}
 \label{sec:bash-code-disassembling}
@@ -374,7 +362,7 @@ the format specifiers are reused:
 \label{sec:exit-codes-boolean}
 
 \begin{lstlisting}
-[[ "$1" = @(-h|--help) ]] && exit 0
+[[ "$1" == @(-h|--help) ]] && exit 0
 \end{lstlisting}
 
 \lstinline|exit| terminates the current shell \textit{process}
@@ -430,10 +418,10 @@ command \lstinline|[[| to test another command's exit code.
 
 \begin{lstlisting}
 # -or-
-command; if [[ $? = 0 ]]; then : ; fi
+command; if [[ $? -eq 0 ]]; then : ; fi
 \end{lstlisting}
 
-Here, we find another command pair \lstinline|type -a[|.
+Here, we find another command pair \lstinline|type -a [|.
 \lstinline|[[| is only available to Bash.
 
 \section{read}
@@ -574,6 +562,20 @@ Pay attention to the difference between \textit{declare} (only the
 name is required) and \textit{printf} (name should be expanded by
 \lstinline|$|).
 
+\section{globstar}
+\label{sec:bash-globstar}
+
+The special glob character \lstinline|*| matches any string of any
+length, including the \textit{null} string.
+
+When the \lstinline|shopt -s globstar| option is enabled, two
+ajacent two adjacent \lstinline|*|s used as a single pattern will
+match all files and zero or more directories and subdirectories.
+If followed by a \lstinline|/|, two adjacent \lstinline|*|s will
+match only directories and subdirectories.
+
+\textit{globstar} is also called \textit{recursive glob}.
+
 \section{extglob}
 \label{sec:bash-extglob}
 
@@ -619,7 +621,7 @@ _delete_url=${url#http?(s)://} ;
 shopt -u extglob; printf "%s\n" "${_delete_url}"'
 
 shopt -u extglob
-var='--help' ; [[ "$var" = @(-h|--help) ]] && echo 'yes'
+var='--help' ; [[ "$var" == @(-h|--help) ]] && echo 'yes'
 \end{lstlisting}  
 \end{minipage}
 
@@ -647,24 +649,27 @@ Still the same code snippet at previous section, we have
 < <(ip -4 -o addr show scope global dev bond0)
 \end{lstlisting}
 
-\lstinline|>(list)| or \lstinline|<(list)| is called
+\lstinline|>(list)| and \lstinline|<(list)| are called
 \href{https://www.gnu.org/software/bash/manual/bash.html#Process-Substitution}{Process
-  Substitution} that allows a process's input or output to be
-referred to using a \uline{filename}, which the process get inputs
-from or output results to a file. Attention, a sub-shell is
-spawned when process substitution happens (there is a pair of
-parentheses there).
+  Substitution} \textit{operator}s that allow a process's input or
+output to be referred to using a \uline{filename}, which the
+process get inputs from or output results to a file. Attention, a
+sub-shell is spawned when process substitution happens (there is a
+pair of parentheses there).
 
 The keyword \textit{list} here may be a normal command or a
-pipeline of commands. No space may appear between the \verb|<| or
-\verb|>| and the left parenthesis \verb|)|, otherwise the form
-would be interpreted as a redirection. Process Substitution is
-supported on systems that support
-\href{http://mywiki.wooledge.org/NamedPipes}{named pipes} (FIFOs)
-or the \verb|/dev/fd/| method of naming opened files.
+pipeline of commands. No space may appear between the \verb|<,>|
+and the left parenthesis \verb|(|, otherwise the form would be
+interpreted as a redirection.
 
-We can just think of the two forms as just filenames, which is
-done by giving the list a name in the filesystem:
+The operators execute commands in \textit{list} in a sub-shell
+and send the output to a file. The operator is then substituted
+with the pathname of that file. Process Substitution is supported
+on systems that support
+\href{http://mywiki.wooledge.org/NamedPipes}{named pipes} (FIFOs)
+or the \verb|/dev/fd/| method of naming opened files. We can just
+think of the two forms as just filenames, which is done by giving
+the list a name in the filesystem:
 
 \begin{quotation}
   process substitution = filename
@@ -674,15 +679,15 @@ For the input form \lstinline|>(list)|, writing to the file will
 provide input for the enclosed \textit{list} like:
 
 \begin{lstlisting}
-command ... >(list) ...
+# command ... >(list) ...
 
 echo >(true)
 
 cat file.txt > >(wc -l)
 \end{lstlisting}
 
-The first example prints the input filename of the command
-substitution. Instead, the second \textit{redirects} the output of
+The first example displays filename of the command
+substitution. The second \textit{redirects} the output of
 \lstinline|cat| to the input filename.
 
 If the output form
@@ -691,7 +696,7 @@ output of the \textit{list} like:
 
 \begin{minipage}{1.0\linewidth}
 \begin{lstlisting}
-command ... <(list) ...
+# command ... <(list) ...
 
 echo <(true) # print the output filename
 cat <(list)  # print the contents of the output filename
@@ -926,70 +931,6 @@ expression. The first one is preceded by a
 \verb|$| within which \verb|\'| is correctly interpreted. While
 the 2nd version, put the \verb|\'| outside of single
 quotes\verb|'foo-bar'|.
-
-\section{Regular Expression}
-\label{sec:regular-expression}
-
-To learn regular expression, read
-[Quickstart](https://www.regular-expressions.info/quickstart.html)
-first. Check the bit-by-bit
-\href{https://www.regular-expressions.info/tutorial.html}{authoritative
-  tutorial} for details.
-
-Pay attention to the terms \uline{character class} \lstinline|[ ]|
-and \uline{capture group} \lstinline|( )|. A character class match
-one and only one character. So \lstinline|a[1-9]| does not match a
-single character \verb|a|.
-
-In regular expression, a dot matches any character except visual
-newline. A negated character class matches a newline instead like
-\lstinline|[^a-z]|.
-To avoid that, use \lstinline|[^a-z\r\n]|.
-
-Regex is not intended for or good at \textit{inverse} search. But
-we can mimic this behavior by \textit{lookaround} at
-\href{https://www.regular-expressions.info/lookaround.html}{Lookahead
-  and Lookbehind Zero-Length Assertions}. It is quite
-\href{https://stackoverflow.com/q/406230}{useful} when we want to
-exclude something when matching.
-
-For example, if the command is \lstinline|grep|, use option
-\lstinline|-P| to enable \uline{PCRE} engine. The code below
-excludes entries of which the URI part does not contain
-\textit{itunes-assets}.
-
-\begin{lstlisting}
-cclog hpc access 201902141200 201902151200 | \
-grep -P -m2 'http://aod\.itunes\.apple\.com/(?!itunes-assets).*headers='
-\end{lstlisting}
-
-However, we can resort to \lstinline|-v| to do the same work.
-
-\begin{lstlisting}
-cclog hpc access 201902141200 201902151200 | \
-grep -m2 'http://aod\.itunes\.apple\.com/.*headers=' \
-grep -v 'itunes-assets'
-\end{lstlisting}
-
-So when to use \textit{lookahead} and when to use
-\textit{lookbehind}? From my experience, if you don't want
-to match something \textit{immediately} following a
-\textit{literal string}, then use \textit{lookahead}. Similarly,
-if you don't want to match something immediately preceding a
-literal literal string, use \textit{lookbehind}.
-
-Like \lstinline|^| and
-\lstinline|$| (for start and end of \textit{string}),
-\lstinline|\b| is also an anchor for start and end of
-\textit{word} like \lstinline|\bhello\b|. It can be called as
-\textit{boundary}. The counterpart \lstinline|\B| matches at every
-position where \lstinline|\b| cannot match.
-
-To match a valid IPv4 address, use:
-
-\begin{lstlisting}
-^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$
-\end{lstlisting}
 
 \section{Array}
 \label{sec:bash-array}
@@ -1244,9 +1185,15 @@ The \lstinline|-i[SUFFIX]| or \lstinline|--in-place[=SUFFIX]|
 option edits files in place (makes backup if SUFFIX supplied).
 
 Form \lstinline|/regexp/| matches lines against the regular
-expression. In the example above, \lstinline|^[[:space:]]*$|
-matches empty lines. The traling command \lstinline|d| means to
-delete matched lines.
+expression. In the example above,
+\lstinline|^[[:space:]]*$| matches empty lines. The traling
+command \lstinline|d| means to delete matched lines.
+
+To support extended regular expressions, add option
+\lstinline|sed -r| like:
+\lstinline|sed -r 's/[[:blank:]]+/ /g' /proc/slabinfo|. Otherwise,
+the plus symbol should be escaped like:
+\lstinline|sed 's/[[:blank:]]\+/ /g' /proc/slabinfo|.
 
 The variant version is somewhat not so obvious but usually faster
 if the file has less empty lines. Pay attention to the exclamation
@@ -1281,8 +1228,10 @@ awk -F'/' 'BEGIN { ORS="/" } /foo/{ $3="www.bing.com" ; for ( i=1; i<=NF; i++ ) 
 
 In the meanwhile, special escapes \lstinline|\1| through
 \lstinline|\9| refers to the corresponding matched sub-expressions
-in the \textit{regexp}. For example, \lstinline|s/(h.)l(.o)/\2/|
-will replace the word \textit{hello} with \textit{lo}.
+in the \textit{regexp}. To enable this feature, we should add
+option \lstinline|-E| or \lstinline|-r|. For example,
+\lstinline|-E s/(h.)l(.o)/\2/| will replace the word
+\textit{hello} with \textit{lo}.
 
 To match a continuous lines block, we have:
 
@@ -1322,9 +1271,9 @@ sed '/Title/,/Subject/s/foo/test/' file
 \end{lstlisting}
 
 Finally, to
-\href{https://stackoverflow.com/q/12833714}{differentiate}the
+\href{https://stackoverflow.com/q/12833714}{differentiate} the
 concepts of \textit{pattern space} and \textit{hold space} is
-important to master \lstinline|sed|.
+important to master \lstinline|sed -n '1!G;h;$p'|.
 
 \subsection{ed}
 \label{sec:bash-ed}
@@ -1447,6 +1396,16 @@ Here is a real case:
 awk 'BEGIN {IGNORECASE=1}; /[-_]cache:/ { print substr($0, 3) }'
 \end{lstlisting}
 
+\lstinline|awk| accepts regular expression as \verb|FS| like
+\ref{sec:bash-str-as-delim}. Here is a real case:
+
+\begin{lstlisting}
+gawk -F'\\^~\\$' '{ print $1 }' <<< '1^~$2'
+mawk -F'\^~\$' '{ print $1 }' <<< '1^~$2'
+
+awk 'BEGIN { FS="|" }; { print $2 }' <<< "abc|123"
+\end{lstlisting}
+
 Like \lstinline|sed|, \lstinline|awk| also accepts range pattern
 \verb|pattern1, pattern2|. It matches all input records starting
 with a record that matches \uline{pattern1}, and continuing until
@@ -1462,12 +1421,56 @@ printf 'hello world\nchina\n' | sed -n '/he/,/wo/p'
 printf 'hello\nchina\n' | awk '/he/,/wo/'
 \end{lstlisting}
 
-If a record matches both patterns, then that single record is also regarded as
-a range, which is slightly different from \lstinline|sed|.
+If a record matches both patterns, then that single record is also
+regarded as a range, which is slightly different from
+\lstinline|sed|.
 
 Attention that, \lstinline|awk| does not support \textit{lookeahd}
 or \textit{lookahead} since it uses POSIX Extended Regular
 Expression (ERE).
+
+Check \href{https://stackoverflow.com/q/32481877}{What is NR==FNR
+  in awk?}. Generally, \verb|NR| is the total number of records
+(lines) read so far. \verb|FNR| is the line number (number of
+lines) in the current file. Hence, \verb|FNR == NR| means
+\verb|awk| is processing the first file as \verb|FNR| is reset to
+1 for each new file.
+
+Here is an interesting code:
+
+\begin{lstlisting}
+awk 'BEGIN { p = 0 }; tolower($0) ~ /keyword/ { p = !p ; next }; p' file.txt
+awk 'tolower($0) ~ /keyword/ { p = !p ; next }; p' file.txt
+\end{lstlisting}
+
+It prints all lines after a line with 'keyword' (case-insensitive)
+until a second line with 'keyword'. If there is only one line with
+'keyword', the it prints lines until the end of file.
+
+By default, variables are initialized to \verb|""| or \verb|0| if
+not initialized by the \lstinline|BEGIN| pattern. Hence, the
+\lstinline|BEGIN { p = 0 }| is optional. Variables defined by
+\verb|-v| is better in that it accepts values from Shell like:
+
+\begin{lstlisting}
+awk -v var="$SHELL" 'BEGIN { print var }'
+\end{lstlisting}
+
+Then I want to talk about how \verb|awk| calls system commands:
+
+\begin{itemize}
+\item system(cmd-line)
+\item cmd-line | getline
+\end{itemize}
+
+\verb|system()| may not be available on non-Posix
+systems. Remember to close the opened command line as it has a
+file descriptor associated.
+
+\begin{lstlisting}
+awk 'BEGIN { cmd="ls /"; system(cmd); close(cmd) }'
+awk 'BGIN { cmd="ls /"; while(cmd|getline) print; close(cmd) }'
+\end{lstlisting}
 
 \subsubsection{grepawk}
 \label{sec:grepawk}
@@ -1644,9 +1647,7 @@ sequence of things:
 \end{lstlisting}
 
 Check the relevant sections in the manual, to find out what they
-are.
-
-Of the list, \uline{OPERATORS} join together the other items
+are. Of the list, \uline{OPERATORS} join together the other items
 within the expression. They include for example \lstinline|-o|
 (meaning logical OR) and \lstinline|-a| (meaning logical
 AND). Where an operator is missing, \lstinline|-a| is assumed.
@@ -1736,7 +1737,6 @@ directory itself.
 
 Hence, some of the examples above should be rectified!
 
-
 Now let's have a look at code:
 
 \begin{lstlisting}
@@ -1765,6 +1765,70 @@ That is an illegal command form. Hence the second example reports:
 \end{quotation}
 
 So, always quote the glob after \lstinline|-name| option.
+
+Another interesting point is how \lstinline|find| calculate
+\textit{access} and \textit{modification} time. Take the option
+\lstinline|$-mtime| for example, \lstinline|find| firstly
+calcuates \textit{day}s passed since modification:
+
+\[ ( \text{current-time} - \text{modification-time} ) / 86400 \]
+
+The decimal fraction is \textit{rounded downwards} to the floor
+like C language division. In a more fine-grained unit like
+\textit{minute}, so the \uline{real modification age} is probably
+greater than that. When option \lstinline|-mtime n| is used, files
+of which the \textit{calculated modification age} is \textit{equal
+  to} $n$ are matched. The real modification age of the matched
+files belongs to $n$ to $n.\overline{9}$ days.
+
+To strictly find out files whose calculated modification age is
+greater than but not equal to $n$ days (\textit{at least} $n + 1$
+days ago), we use \lstinline|-mtime +n|. On the contrary,
+\lstinline|-mtime -n| requires the calculated age is less than but
+not equal to $n$ (at most $n - 1$ days).
+
+This rule also applies to other \textit{timestamp} options like
+\lstinline|-atime, -ctime| etc. These options are all measured in
+units of day, to get more accurate results, change to unit of
+\textit{minute} like \lstinline|-amin, -cmin, -mmin|.
+
+\lstinline|find| also supports comparing timestamp of two files
+with \lstinline|-newer file, -newerXY file| where \uline{X} and
+\uline{Y} are one of \uline{a B c m t}. For details, refer to the
+'TESTS' section of the man page.
+
+In addition to timestamp, we also have the
+$\text{-size} \pm n[cwbkMG]$. Unlike the calculated timestamp, the
+decimal fraction part of file size is \textit{rounded upwards} to
+the next unit. So, when the unit is \uline{M}, a 1-byte file is
+rounded up to \uline{1M}; if the unit is \uline{k}, then a 1-byte
+file is rounded up to \uline{1k}. Take \lstinline|-size -1M| (less
+than \lstinline|1M|) for example, the 1-byte file rounded to
+\uline{1M} is not matched.
+
+\uline{-1k} and \uline{-1M} \textit{only} match files of size
+\textit{0}. To match a file size within $[0,1M]$, use \uline{-2M,
+  -1025k}; \uline{1M} for $(0,1M]$; \uline{-1024k} for
+$[0,1M)$. To avoid mistake introduced by different units, we can
+stick to the byte unit \textit{c}.
+
+Why file size is rounded up? By default, \lstinline|-size| uses
+unit of \textit{512-byte block}. If a file size is 513 bytes, then
+it would take 2 blocks.
+
+In a nutshell, there exist two factors to consider when testing
+timestamp or size, namely:
+
+\begin{itemize}
+\item the real timestamp/size versus the calculated ones;
+\item option argument $[\pm] n$ denoting less than, equal to or
+  greater than.
+\end{itemize}
+
+So to find a file modified at least 10 days ago and smaller than
+1M, use:
+
+\lstinline|find . -type f -mtime +9 -size -1024k|
 
 \subsection{mapfile}
 \label{sec:bash-mapfile}
@@ -1851,6 +1915,262 @@ capture output (\textit{stdout} and \textit{stderr}) of
 The second case is \lstinline|set -x|. Similar to
 \lstinline|time|, I want to capture the command executed into file.
 
+\subsection{curl}
+\label{sec:curl}
+
+At the very first, I want to show the
+\href{https://github.com/curl/curl}{curl}
+\href{https://ec.haxx.se/cmdline-progressmeter.html}{PROGRESS
+  METER} that shows downloading status in figure
+\ref{fig:progress-meter-curl}.
+
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[scale=0.5]{curl-progress-meter}
+  \caption{Progress Meter of curl}
+  \label{fig:progress-meter-curl}
+\end{figure}
+
+To simplify the progress meter, \lstinline|curl| supports
+\lstinline|-#| or \lstinline|--progress-bar| option.
+
+Another useful option is \lstinline|-D| that dump the respond
+headers to a file for later reference. Cookies from the respond
+headers could be read by a second \lstinline|curl| invocation by
+option \lstinline|-b, --cookie|. But pay attention to the
+\uline{curl CRLF} issue \ref{lst:curl-crlf}. If followed by a dash
+\lstinline|-D-|, headers will be dumped to STDOUT.
+
+\subsubsection{curl POST PUT}
+\label{sec:curl-post-put}
+
+To post data to a remote server, firstly, we specify the HTTP
+request method by \lstinline|-X POST| or
+\lstinline|--request POST|. The data to be posted should be
+specified by option \lstinline|-d, --data|. \lstinline|curl| will
+send the data to the HTTP server in the same way a browser does
+when a user has filled in an HTML form and press the submit
+button. For example:
+
+\begin{lstlisting}
+curl -v -X POST --data 'name=jim' http://www.example.com/api/info
+\end{lstlisting}
+
+Data can be loaded from a file, which is done by
+\lstinline|-d '@data.file'|. Attention that, the argument is
+single-quoted:
+
+\begin{lstlisting}
+curl -v -X POST -d '@data.txt' http://223.202.75.26:32000/bm-app/apir/9120/qryLocationInfoAndIp
+
+# data.txt:
+name=jim&age=23
+\end{lstlisting}
+
+If \lstinline|-d '@-'| is used, then data is read from STDIN:
+
+\begin{lstlisting}
+curl -v -X POST -d '@-' http://223.202.75.26:32000/bm-app/apir/9120/qryLocationInfoAndIp
+name=jim&age=23
+^D
+\end{lstlisting}
+
+There are two common data formats, namely ``urlencoded'' and
+``JSON'', taking the following two forms:
+
+\begin{lstlisting}
+-H "Content-Type: application/x-www-form-urlencoded"
+
+-H "Content-Type: application/json"
+\end{lstlisting}
+
+Other formats like XML are not unusual as well. By default,
+``urlencoded'' is used as it is concise and neatly organized. So
+the ``Content-Type'' header can be omitted. Check this example:
+
+\begin{lstlisting}
+curl -v -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'name=jim&age=23' http://223.202.75.26:32000/bm-app/apir/9120/qryLocationInfoAndIp
+\end{lstlisting}
+
+For JSON data, it is recommended to load from external file:
+
+\begin{lstlisting}
+curl -v -X POST -H "Content-Type: application/json" -d '@api.json' http://223.202.75.26:32000/bm-app/apir/9120/qryLocationInfoAndIp
+
+curl -v -X POST -H "Content-Type: application/json" -d '{"name": "jim", "age": 23}' http://223.202.75.26:32000/bm-app/apir/9120/qryLocationInfoAndIp
+\end{lstlisting}
+
+If the \lstinline|-d| option is supplied multiple times,
+\lstinline|curl| will \textit{url-encode} the data before sending
+out. \lstinline|--data 'name=jim' --data 'age=23'| will be merged
+as \lstinline|'name=jim&age=23'|. It is quite handy for form
+fields, though \lstinline|curl| supports option
+\lstinline|-F, --form|.
+
+The \lstinline|-d| option has multiple variants like
+\lstinline|--data-raw|, \lstinline|--data-urlencode|,
+\lstinline|--data-binary| etc. \lstinline|--data-urlencode| is
+useful when if the data contain spaces like:
+
+\begin{lstlisting}
+curl -v -G "http://localhost:30001/data" --data-urlencode "msg=hello world" --data-urlencode "msg2=hello world2"
+
+# /data?msg=hello%20world&msg2=hello%20world2
+\end{lstlisting}
+
+Read more in man page and check
+\href{https://gist.github.com/subfuzion/08c5d85437d5d4f00e58}{curl.md}.
+
+\subsection{wget}
+\label{sec:wget}
+
+Use \lstinline|wget| to download a remote directory with
+\lstinline|-r, --recursive| option:
+
+\begin{lstlisting}
+wget -r -l2 -np -R "index.html*,mp3" -nH --cut-dirs=1 http://example.com/dir1/dir2/
+\end{lstlisting}
+
+\begin{itemize}
+\item \lstinline|-l, --level| specifies the maximum recursion
+  depth. By default, it is 5. Value \lstinline|inf| means
+  \textit{infinite} recursion.
+\item The \lstinline|-np, -no-parent| option does not ever ascend
+  to the parent directory when retrieving recursively.
+\item An \textit{intex.html} is automatically generated, which can
+  be disabled by option \lstinline|-R, --reject| which rejects
+  files by \textit{suffix} or \textit{filename}s if wildcard
+  characters \lstinline|* ? [ ]| are used. For example,
+  \lstinline|-R pdf| excludes PDF files while \lstinline|temp*|
+  excludes filenames with leading string \textit{temp}.
+\item By default, invoking Wget with
+  \lstinline|-r http://fly.srk.fer.hr/| will create a local
+  directory beginning with the host
+  \textit{fly.srk.fer.hr/}. Option
+  \lstinline|-nH, --no-host-directories| removes that.
+\item \item \lstinline|--cut-dirs=number| ignores \textit{number}
+  directory prefixes.
+\end{itemize}
+
+In the example above, \lstinline|-nH, --cut-dirs=1| creates a
+local directory \textit{dir2/} without leading
+\textit{fly.srk.fer.hr/dir1/} pathname. If we change
+\textit{number} to 2, then all files are downloaded in current
+directory < \uline{.} >
+
+A similar option is \lstinline|-m, --mirror| to mirror a site. It
+is equivalent to \lstinline|-r -N -l inf --no-remove-listing|.
+
+\begin{lstlisting}
+wget -m -np -nH --cut-dirs=0 -Epk -R "index.html*,mp3" -X "/video-dir/sexy" [--restrict-file-names=nocontrol] http://192.168.0.105:8080/a/
+\end{lstlisting}
+
+\begin{itemize}
+\item \lstinline|-E, --adjust-extension| appends suffix
+  \textit{.html} to \verb|application/xhtml+xml| or
+  \verb|text/html| filenames if it does not end with
+  \textit{regex} \lstinline|\.[Hh][Tt][Mm][Ll]?|.
+\item \lstinline|-p, --page-requisites| downloads linked resources
+  to display a given HTML.
+\item \lstinline|-k, --convert-links| converts the links in the
+  document to make them suitable for local offline viewing.
+\item \lstinline|-X| is to reject unwanted directories, similar to
+  \lstinline|-R, --reject|. Please use the full pathname
+  \textit{relative} to the URL. \lstinline|-X "/video-dir/sexy"|
+  means to exlude
+  \textit{http://192.168.0.105:8080/a/video-dir/sexy}. The
+  leading forwardslash is optional.
+\item \lstinline|--restrict-file-names=nocontrol|. The term
+  \textit{restrict} means to allow only characters of filename
+  valid and safe to your local operating system. Invalid filename
+  characters (including those unprintable control characters) are
+  \textit{escaped}. Argument \textit{unix} would escape
+  forwardslash \lstinline|/| and unprintable control
+  characters. The argument \textit{nocontrol} tells Wget
+  \textit{not} to escape control characters. It solves Chinese
+  mojibak issue as parts of which fall into the range of control
+  characters.
+\end{itemize}
+
+\paragraph{Re-downloading of the same pathname} By default,
+downloading multiple copies of the same pathname would result in
+new copies ending with number suffixes like \textit{pathname.1},
+\textit{pathname.2} etc., which is called
+\uline{clobbered}. Option \verb|-r| would \uline{overwrite} the
+old copy with new one from server. Option \verb|-nc, --no-clobber|
+just refuses to download any new copies and \uline{preserve} the
+old copy. When option \verb|-N, --timestamping| is used, whether or
+not to download a new copy depends on the local and remote
+timestamp and size of the file. Remember, do not specify
+\verb|-no| and \verb|-N| concurrently. Therefore, either
+\verb|-r -nc| or \verb|-r -N|.
+
+\paragraph{To use proxy} \lstinline|wget| supports \lstinline|-e|
+option like \lstinline|wget -e https-proxy=127.0.0.1:8080|. Of
+course, the proxy setting could set put in \lstinline|/etc/wgetrc|
+or \lstinline|~/.wgetrc| like:
+
+\begin{lstlisting}
+use_proxy=on
+
+http-proxy=127.0.0.1:8080
+https-proxy=127.0.0.1:8080
+ftp-proxy=127.0.0.1:8080
+\end{lstlisting}
+
+To turn off all proxies, set \lstinline|use_proxy| as
+\textit{off}.
+
+\subsection{rsync}
+\label{sec:rsync}
+
+We can use \lstinline|rsync| to synchronize files between a source
+and a destination. Specially, if one end is an remote host,
+\lstinline|rsync| can transfer data over \textit{remote shell}
+(\href{https://serverfault.com/q/378939}{default} to
+\lstinline|ssh|) or \textit{rsync daemon} (directly over TCP).
+
+If the host is followed by one single colon, \lstinline|ssh|
+connection is used. The option \lstinline|-e, --rsh=COMMAND|
+specifies the remote shell to use. If it is two colons
+(i.e. \lstinline|foo::|) or \lstinline|rsync://|, \textit{rsync
+  daemon} is used.
+
+\begin{lstlisting}
+# -e "ssh" is optional
+# -z compresses contents before transmission, usually used over
+# network transmission
+rsync -avzP -e "ssh" ~/workspace/src/ dev:~/dev/
+
+# customize SSH port
+rsync -avzP -e "ssh -p 2222" ~/workspace/src/ dev:~/dev/
+
+# -n, --dry-run
+rsync -n -avzP ~/workspace/src/ dev:~/dev/
+
+# --delete to mirror the source and dest
+# If a source file is deleted from the source, then delete it from
+# the dest either. By default, only append.
+rsync -avzP --delete ~/workspace/src/ dev:~/dev/
+\end{lstlisting}
+
+We cannot emphasize too much the paramount importance of trailing
+forwardslash \verb|/|:
+
+\begin{itemize}
+\item If \verb|/| is placed at the end of the source folder,
+  \verb|rsync| will copy the contents of the folder.
+\item If the source folder is not followed by \verb|/|,
+  \lstinline|rsync| will copy both the folder and contents
+  therein.
+\item If \verb|/| is palced at the end of the target folder,
+  \lstinline|rsync| will paste the data directly inside that
+  folder.
+\item If the target folder is not followed by \verb|/|,
+  \lstinline|rsync| will create the target folder and then paste
+  the data inside.
+\end{itemize}
+
 \subsection{tr}
 \label{sec:bash-tr}
 
@@ -1865,7 +2185,7 @@ tr [OPTION]... SET1 [SET2]
 \uline{SET1} and/or \uline{SET2} define ordered sets of characters
 like \lstinline|[:alpha:]| and \lstinline|c-g| (without
 brackets). The format of the SET1 and SET2 arguments resembles the
-format of regular expressions \ref{sec:bash-regular-expression};
+format of regular expressions \ref{cha:regular-expression};
 however, they are not regular expressions, only lists of
 characters.
 
@@ -1919,6 +2239,19 @@ The code want to delete four characters in which hyphen is
 included. In the first case, \lstinline|-a| will be treated as
 command-line option. The last method uses \textit{equivalence
   class}. For details, check the \lstinline|info tr| page.
+
+\subsection{dig}
+\label{sec:bash-dig}
+
+The \lstinline|+trace| option traverses the resolution system in a
+\textit{iterative} resolution method. At the very first, local
+name server (i.e. \textit{/etc/resolv.conf} is used to obtain a
+list of root domain name server unless \lstinline|@name-server| is
+specified. For example:
+
+\begin{lstlisting}
+# dig +trace www.bing.com. @1.2.4.8
+\end{lstlisting}
 
 \section{Math}
 \label{sec:bash-math}
@@ -2383,8 +2716,70 @@ We define the string delimiter as \lstinline|_headers_sep|. When
 doing the parameter expansion, there is no need to escape those
 characters as \lstinline|_headers_regex| does.
 
+\section{signal(7)}
+\label{sec:signal7}
 
+POSIX signals are classified into \textit{reliable signals} and
+\textit{real-time signals}. Reliable signal, hereinafter, is
+called \textit{standard signal}.
 
+Each signal has a default \textit{disposition} that determines the
+\uline{action} to perform when the process is delivered the
+signal. For instance, Action \uline{Term} terminates a process and
+action \uline{IGN} ignores the process etc. However, a process can
+change the default by \textit{sigaction(2)} or
+\textit{signal(2)}. The signal disposition is a
+\textit{per-process} attribute: in a multithreaded application,
+the disposition of a particular signal is \textit{the same} for
+all threads.
+
+Some system calls or library functions allow the caller to
+\textit{send} a signal like \uline{kill(2)} and \uline{raise(3)};
+other system calls and library functions suspend execution of the
+calling process or thread until a signal is caught
+(\textit{receive} a signal) like \uline{pause(2)} and
+\uline{sigsuspend(2)}.
+
+A signal takes the form of an upper case string
+(i.e. \uline{SIGTERM}) or an integer (i.e. \uline{15}). The fixed
+prefix \uline{SIG} can be removed (i.e. \uline{TERM}). Standard
+signals like \uline{SIGHUP 1}, \uline{SIGINT 2}, \uline{SIGKILL
+  9}, \uline{SIGTERM 15} and \uline{SIGSTOP 19} are often used
+when doing system operation.
+
+\uline{SIGHUP} tells a process to reload configuration
+files. \uline{SIGINT} sends a terminal interrupt signal by
+\verb|Ctrl-C| to terminate a process. Similarly, \verb|Ctrl-Z|
+suspends execution. \uline{SIGTERM} also terminates a process but
+it can be caught (and interpreted) or ignored, allowing a graceful
+termination by releasing resources and saving
+states. \uline{SIGTERM} is almost identical to \uline{SIGINT,
+  Ctrl-C}. \uline{SIGKILL} terminates a process immediately (kill)
+in a brute force way. It cannot be caught or ignored, and the
+receiving process cannot perform any clean-up upon receving the
+signal: the \textit{last} resort to terminate a process. The
+\uline{SIGSTOP} tells the operating system to \textit{stop} a
+process for later resumption by \uline{SIGCONT}.
+
+Linux provides the \lstinline|kill(1)| command line (the user
+interface of \uline{kill(2)} system call) to send a signal to a
+process. \lstinline/kill [-l | -L]/ lists available
+signals. Without specifying the signal, \uline{SIGTERM} is
+sent. The following three lines are equivalent:
+
+\begin{lstlisting}
+kill [-s | --signal] -<signal> <pid1> <pid2> [...]
+
+kill -15 12345
+kill -SIGTERM 12345
+kill -TERM 12345
+\end{lstlisting}
+
+Recall that, the 3rd column of \lstinline|ps -eF| command prints
+the parent process ID (PPID or GPID). To send a signal to the
+process group, prefix the GPID with a \textit{minus} symbol. A
+GPID of \verb|-1| is special as it indicates all processes except
+the kill process itself and \textit{init}.
 
 % ARRAY line
 % MAPFILE _log_array
@@ -2394,9 +2789,9 @@ characters as \lstinline|_headers_regex| does.
 % if you ever feel need for automatical generation of names for variables in bash, it means you need to approach your problem using associative array
 % sep=')@|#('; data='hello)@|#(there)@|#(blah)@|#('; readarray -t split <<<"${data//"$sep"/$'\n'}";  declare -p split
 % eval vs exec https://unix.stackexchange.com/a/296852
-
-
-
+% https://www.cnblogs.com/cyfonly/p/5800758.html
+% awk 'FNR==NR{a[$0]=$1;next} $1 in a{print $0}' file-a file-b > file-c
+% difference between nohup, disown and & https://unix.stackexchange.com/a/148698
 
 
 \lstset{language=TeX}
